@@ -1,0 +1,32 @@
+'use client'
+
+import Link from 'next/link'
+import { Button } from '../ui/button'
+import UserButton from './UserButton'
+
+import { signIn, useSession } from 'next-auth/react'
+import { Skeleton } from '../ui/skeleton'
+
+export default function NavBar() {
+  const session = useSession()
+  const user = session.data?.user
+
+  return (
+    <header className="sticky top-0 bg-background px-3 shadow-sm">
+      <nav className="mx-auto flex h-14 w-full max-w-7xl items-center justify-between gap-3">
+        <Link href="/" className="font-bold">
+          Next-Auth v5 Tutorial
+        </Link>
+        {user && <UserButton user={user} />}
+        {session.status === 'loading' && (
+          <Skeleton className="w-10 h-10 rounded-full bg-slate-400" />
+        )}
+        {!user && session.status !== 'loading' && <SignInButton />}
+      </nav>
+    </header>
+  )
+}
+
+function SignInButton() {
+  return <Button onClick={() => signIn()}>Sign in</Button>
+}
